@@ -3,17 +3,26 @@ package example
 import cats.Monoid
 
 object Demo {
-  implicit val intAdditionMonoid: Monoid[Int] = new Monoid[Int] {
-    def empty: Int = 0
-    def combine(x: Int, y: Int): Int = x + y
-  }
+  def combineAll[A](list: List[A])(implicit A: Monoid[A]): A = list.foldRight(A.empty)(A.combine)
 
   implicit val stringMonoid: Monoid[String] = new Monoid[String] {
     def empty: String = ""
     def combine(x: String, y: String): String = x ++ y
   }
 
-  def combineAll[A](list: List[A])(implicit A: Monoid[A]): A = list.foldRight(A.empty)(A.combine)
+  final case class Sum(i: Int) { def getSum: Int = i }
+
+  implicit val sumMonoid: Monoid[Sum] = new Monoid[Sum] {
+    def empty: Sum = Sum(0)
+    def combine(x: Sum, y: Sum): Sum = Sum(x.getSum + y.getSum)
+  }
+
+  final case class Product(i: Int) { def getProduct: Int = i }
+
+  implicit val productMonoid: Monoid[Product] = new Monoid[Product] {
+    def empty: Product = Product(1)
+    def combine(x: Product, y: Product): Product = Product(x.getProduct * y.getProduct)
+  }
 
   final case class Pair[A, B](first: A, second: B)
 
