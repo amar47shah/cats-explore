@@ -56,4 +56,19 @@ object Demo {
           Pair(A.combine(x.first, y.first), B.combine(x.second, y.second))
       }
   }
+
+  implicit def optionMonoid[A](implicit A: Monoid[A]): Monoid[Option[A]] = new Monoid[Option[A]] {
+    def empty: Option[A] = Some(A.empty)
+    def combine(x: Option[A], y: Option[A]): Option[A] =
+      for { a <- x; b <- y } yield A.combine(a, b)
+  }
+
+  final case class Target[E, A](f: E => A)
+
+  object Target {
+    implicit def targetMonoid[E, A](implicit A: Monoid[A]): Monoid[Target[E, A]] = new Monoid[Target[E, A]] {
+      def empty: Target[E, A] = Target[E, A](Function.const(A.empty))
+      def combine(x: Target[E, A], y: Target[E, A]): Target[E, A] = Target(e => A.combine(x.f(e), y.f(e)))
+    }
+  }
 }
