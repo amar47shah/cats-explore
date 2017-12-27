@@ -24,6 +24,20 @@ object Demo {
     def combine(x: Product, y: Product): Product = Product(x.getProduct * y.getProduct)
   }
 
+  final case class All(b: Boolean) { def getAll: Boolean = b }
+
+  implicit val allMonoid: Monoid[All] = new Monoid[All] {
+    def empty: All = All(true)
+    def combine(x: All, y: All): All = All(x.getAll && y.getAll)
+  }
+
+  final case class Any(b: Boolean) { def getAny: Boolean = b }
+
+  implicit val anyMonoid: Monoid[Any] = new Monoid[Any] {
+    def empty: Any = Any(true)
+    def combine(x: Any, y: Any): Any = Any(x.getAny || y.getAny)
+  }
+
   final case class Pair[A, B](first: A, second: B)
 
   object Pair {

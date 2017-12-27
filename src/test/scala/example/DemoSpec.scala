@@ -21,6 +21,10 @@ class DemoSpec extends FlatSpec with Matchers {
     combinedPairs shouldEqual Pair(combinedFirsts, combinedSeconds)
   }
 
+  "The String monoid" should "combine by concatenating strings" in {
+    Monoid[String].combine("abc", "def") shouldEqual "abcdef"
+  }
+
   "The Sum monoid" should "combine by summing integers" in {
     Monoid[Sum].combine(Sum(3), Sum(4)) shouldEqual Sum(7)
   }
@@ -29,7 +33,17 @@ class DemoSpec extends FlatSpec with Matchers {
     Monoid[Product].combine(Product(3), Product(4)) shouldEqual Product(12)
   }
 
-  "The String monoid" should "combine by concatenating strings" in {
-    Monoid[String].combine("abc", "def") shouldEqual "abcdef"
+  "The Any monoid" should "combine using OR" in {
+    Monoid[Any].combine(Any(true ), Any(true )) shouldEqual Any(true )
+    Monoid[Any].combine(Any(false), Any(true )) shouldEqual Any(true )
+    Monoid[Any].combine(Any(true ), Any(false)) shouldEqual Any(true )
+    Monoid[Any].combine(Any(false), Any(false)) shouldEqual Any(false)
+  }
+
+  "The All monoid" should "combine using AND" in {
+    Monoid[All].combine(All(true ), All(true )) shouldEqual All(true )
+    Monoid[All].combine(All(false), All(true )) shouldEqual All(false)
+    Monoid[All].combine(All(true ), All(false)) shouldEqual All(false)
+    Monoid[All].combine(All(false), All(false)) shouldEqual All(false)
   }
 }
