@@ -38,6 +38,13 @@ object Demo {
     def combine(x: Any, y: Any): Any = Any(x.getAny || y.getAny)
   }
 
+  final case class Endo[A](f: A => A) { def getEndo: A => A = f }
+
+  implicit def endoMonoid[A]: Monoid[Endo[A]] = new Monoid[Endo[A]] {
+    def empty: Endo[A] = Endo[A](identity)
+    def combine(x: Endo[A], y: Endo[A]): Endo[A] = Endo(a => x.getEndo(y.getEndo(a)))
+  }
+
   final case class Pair[A, B](first: A, second: B)
 
   object Pair {

@@ -46,4 +46,9 @@ class DemoSpec extends FlatSpec with Matchers {
     Monoid[All].combine(All(true ), All(false)) shouldEqual All(false)
     Monoid[All].combine(All(false), All(false)) shouldEqual All(false)
   }
+
+  "The Endo monoid" should "compose" in {
+    val composed: Endo[Int] = Monoid[Endo[Int]].combine(Endo(x => x + 1), Endo(y => y * 3))
+    composed.getEndo(2) shouldEqual 7
+  }
 }
